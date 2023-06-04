@@ -79,22 +79,22 @@ class BuyukBalik(pygame.sprite.Sprite):
 
 
 class Oyun:
-	def __init__(self, _balikci, _balik_grup):
+	def __init__(self, oyun_buyuk_balik, oyun_balik_grup):
 		# Nesneler
-		self.balikci = _balikci
-		self.balik_grup = _balik_grup
+		self.buyuk_balik = oyun_buyuk_balik
+		self.balik_grup = oyun_balik_grup
 		# Oyun değişkenleri
 		self.sure = 0
 		self.fps_degeri_sayma = 0
 		self.bolum_no = 0
 		self.skor = 0
 		# Balıklar (Yakalamamız gereken balık için yapılan ayarlar)
-		self.balikListe = list()
+		self.balik_liste = list()
 		for j in range(1, 5):
-			balikOyun = pygame.image.load(f"balik{j}.png")
-			self.balikListe.append(balikOyun)
+			balik_oyun = pygame.image.load(f"balik{j}.png")
+			self.balik_liste.append(balik_oyun)
 		self.balik_liste_index_no = random.randint(0, 3)
-		self.hedef_balik_goruntu = self.balikListe[self.balik_liste_index_no]
+		self.hedef_balik_goruntu = self.balik_liste[self.balik_liste_index_no]
 		self.hedef_balik_konum = self.hedef_balik_goruntu.get_rect()
 		self.hedef_balik_konum.top = 40
 		self.hedef_balik_konum.centerx = GENISLIK // 2
@@ -124,7 +124,7 @@ class Oyun:
 		metin_sure_konum.top = 30
 		metin_sure_konum.left = 30
 		# Can metni
-		metin_can = self.oyun_font.render("Can: " + str(self.balikci.can), True, (255, 255, 255), (0, 0, 170))
+		metin_can = self.oyun_font.render("Can: " + str(self.buyuk_balik.can), True, (255, 255, 255), (0, 0, 170))
 		metin_can_konum = metin_can.get_rect()
 		metin_can_konum.top = 30
 		metin_can_konum.left = GENISLIK - 130
@@ -155,7 +155,7 @@ class Oyun:
 		pygame.draw.rect(pencere, (0, 0, 200), (0, 100, 750, YUKSEKLIK - 150), 5)
 
 	def temas(self):
-		temas_var_mi = pygame.sprite.spritecollideany(self.balikci, self.balik_grup)
+		temas_var_mi = pygame.sprite.spritecollideany(self.buyuk_balik, self.balik_grup)
 		if temas_var_mi:
 			if temas_var_mi.tip == self.balik_liste_index_no:
 				temas_var_mi.remove(self.balik_grup)
@@ -166,10 +166,10 @@ class Oyun:
 					self.hedefle()
 				self.skor += 1
 			else:
-				self.balikci.can -= 1
+				self.buyuk_balik.can -= 1
 				self.olme_sesi.play()
 				self.guvenli_alan()
-				if self.balikci.can <= 0:
+				if self.buyuk_balik.can <= 0:
 					self.durdur()
 
 	def oyun_bitti_cizdir(self):
@@ -212,16 +212,16 @@ class Oyun:
 					durum = False
 
 	def reset(self):
-		self.balikci.can = 3
+		self.buyuk_balik.can = 3
 		self.bolum_no = 0
 		self.hedefle()
 		self.guvenli_alan()
-		self.balikci.rect.center = (GENISLIK // 2, YUKSEKLIK - 40)
+		self.buyuk_balik.rect.center = (GENISLIK // 2, YUKSEKLIK - 40)
 		self.sure = 0
 		self.skor = 0
 
 	def guvenli_alan(self):
-		self.balikci.rect.top = YUKSEKLIK - 40
+		self.buyuk_balik.rect.top = YUKSEKLIK - 40
 
 	def hedef_yenile(self):
 		hedef_balik = random.choice(self.balik_grup.sprites())
@@ -229,21 +229,21 @@ class Oyun:
 		self.balik_liste_index_no = hedef_balik.tip
 
 	def hedefle(self):
-		self.balikci.rect.center = (GENISLIK // 2, YUKSEKLIK - 25)
+		self.buyuk_balik.rect.center = (GENISLIK // 2, YUKSEKLIK - 25)
 		if self.bolum_no % 2 == 0 and self.bolum_no != 0:
-			self.balikci.can += 3
+			self.buyuk_balik.can += 3
 		self.bolum_no += 1
 		for balik in self.balik_grup:
 			self.balik_grup.remove(balik)
 		for x in range(self.bolum_no):
 			self.balik_grup.add(Balik(random.randint(0, GENISLIK - 32), random.randint(105, YUKSEKLIK - 150),
-			                          self.balikListe[0], 0))
+			                          self.balik_liste[0], 0))
 			self.balik_grup.add(Balik(random.randint(0, GENISLIK - 32), random.randint(105, YUKSEKLIK - 150),
-			                          self.balikListe[1], 1))
+			                          self.balik_liste[1], 1))
 			self.balik_grup.add(Balik(random.randint(0, GENISLIK - 32), random.randint(105, YUKSEKLIK - 150),
-			                          self.balikListe[2], 2))
+			                          self.balik_liste[2], 2))
 			self.balik_grup.add(Balik(random.randint(0, GENISLIK - 32), random.randint(105, YUKSEKLIK - 150),
-			                          self.balikListe[3], 3))
+			                          self.balik_liste[3], 3))
 
 	def skor_kayit(self):
 		skorTablosu.yazdir(self.skor, self.sure)
